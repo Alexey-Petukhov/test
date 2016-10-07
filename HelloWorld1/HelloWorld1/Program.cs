@@ -29,7 +29,7 @@ namespace vkSmartWall
 
            // Console.WriteLine(vkAPI.GetUserInfo(uid2));
             //File.WriteAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\usr2.txt", vkAPI.GetUserInfo(uid2));
-
+     
             Console.WriteLine("----------------------------------------------------------------");
 
             ////RootGroupMembers memb = JsonConvert.DeserializeObject<RootGroupMembers>(vkAPI.GetMembers(gId));
