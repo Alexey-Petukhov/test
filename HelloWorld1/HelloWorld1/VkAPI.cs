@@ -95,7 +95,7 @@ namespace vkSmartWall
             RootFriendsList friendsList = JsonConvert.DeserializeObject<RootFriendsList>(jsonAnswer);
             List<User> friends = new List<User>();
             User user = null;
-            if (friendsList.response != null)
+            if (friendsList.response != null) // user page is hidden or deleted
             {
                 foreach (var u in friendsList.response.items)
                 {
@@ -112,43 +112,36 @@ namespace vkSmartWall
 
         public String /*WallItem*/ GetWallItems(String uid) // of user by uid
         {
-            String url = baseUrl + "wall.get?owner_id=" + uid;
+            String filter = "&filter=owner";
+            String count = "&count=15";
+            String url = baseUrl + "wall.get?owner_id=" + uid + filter + count + vers;
             String jsonAnswer = DoReqGet(url);
             return DoReqGet(url);
 
         }
     
 
-        public String DoReqGet(String url)
+        public String DoReqGet(String url) // do GET
         {
-
             WebRequest gReq = WebRequest.Create(url);
             WebResponse gResp = gReq.GetResponse();
-
             var responseString = new StreamReader(gResp.GetResponseStream()).ReadToEnd();
-
             return responseString;
         }
 
-        public String DoReqPost(String url, String postData)
+        public String DoReqPost(String url, String postData) // do POST
         {
             WebRequest pReq = WebRequest.Create(url);
-
             var data = Encoding.ASCII.GetBytes(postData);
-
             pReq.Method = "POST";
             pReq.ContentType = "application/x-www-form-urlencoded";
             pReq.ContentLength = data.Length;
-
             using (var stream = pReq.GetRequestStream())
             {
                 stream.Write(data, 0, data.Length);
             }
-
             WebResponse pResp = pReq.GetResponse();
-
             var responseString = new StreamReader(pResp.GetResponseStream()).ReadToEnd();
-
             return responseString;
         }
     }

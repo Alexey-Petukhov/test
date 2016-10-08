@@ -15,8 +15,7 @@ namespace vkSmartWall
         static void Main()
         {
             String gId = "csu_iit";
-            String uid1 = "42560016";
-            String uid2 = "71985644";
+            
 
             //String url = "https://api.vk.com/method/users.get?user_ids=42560016,71985644,mr.pavlichenkov";
             //String url = "https://api.vk.com/method/groups.getMembers?group_id=csu_iit";//&sort=time_asc&v=5.53"; // список пользователей группы
@@ -47,31 +46,37 @@ namespace vkSmartWall
             ////    //    "(№ " + counter + ") id = " + memb.response.users[i] + " - " + uBaseInfo.response[0].first_name + " " + uBaseInfo.response[0].last_name + "\r\n");
             ////}
             Console.WriteLine("================================================================");
+
+            String uid1 = "42560016";
+            String uid2 = "71985644";
+
+            String str = vkAPI.GetWallItems("53516640");
+            RootWallItems rootWall = JsonConvert.DeserializeObject<RootWallItems>(str);
             Group group = new Group(gId);
-            group.SetUsers(vkAPI.GetMembers(group.GetGroupId().ToString())); // gets group members with their friends
+            //group.SetUsers(vkAPI.GetMembers(group.GetGroupId().ToString())); // gets group members with their friends
             
-            // запись в файл дерева -----------------------------------------------------------------------------
-            int uCounter = 0;
-            int fCounter = 0;
-            foreach (var memb in group.GetUsers())
-            {
-                uCounter++;
-                File.AppendAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\HelloWorld1\members+friends.txt",
-                    "(№ " + uCounter + ") id = " + memb.GetUid() + 
-                    " - " + memb.GetFirstname() + " " + memb.GetLastname() + 
-                    ". Friends count:" + memb.GetFriends().Count +"\r\n");
-                fCounter = 0;
-                foreach (var friend in memb.GetFriends())
-                {
-                    fCounter++;
-                    File.AppendAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\HelloWorld1\members+friends.txt",
-                        "-----(№ " + fCounter + ") id = " + friend.GetUid() + " - " + 
-                        friend.GetFirstname() + " " + 
-                        friend.GetLastname() + "\r\n");
-                }
-            }
+            //// запись в файл дерева -----------------------------------------------------------------------------
+            //int uCounter = 0;
+            //int fCounter = 0;
+            //foreach (var memb in group.GetUsers())
+            //{
+            //    uCounter++;
+            //    File.AppendAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\HelloWorld1\members+friends.txt",
+            //        "(№ " + uCounter + ") id = " + memb.GetUid() + 
+            //        " - " + memb.GetFirstname() + " " + memb.GetLastname() + 
+            //        ". Friends count:" + memb.GetFriends().Count +"\r\n");
+            //    fCounter = 0;
+            //    foreach (var friend in memb.GetFriends())
+            //    {
+            //        fCounter++;
+            //        File.AppendAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\HelloWorld1\members+friends.txt",
+            //            "-----(№ " + fCounter + ") id = " + friend.GetUid() + " - " + 
+            //            friend.GetFirstname() + " " + 
+            //            friend.GetLastname() + "\r\n");
+            //    }
+            //}
             
-            //------------------------------------------------------------------------------------------------------------
+            ////------------------------------------------------------------------------------------------------------------
 
             int cnt = 0;
             foreach (var u in group.GetUsers())
