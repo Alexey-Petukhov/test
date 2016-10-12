@@ -77,7 +77,7 @@ namespace vkSmartWall
             User user = null;
             foreach (var u in uBaseInfo.response) // in fact just uBaseInfo.response[0]
             {
-                user = new User(u.uid);
+                user = new User(u.id);
                 //user.SetUid(u.uid);
                 user.SetFirstname(u.first_name);
                 user.SetLastname(u.last_name);
@@ -110,16 +110,76 @@ namespace vkSmartWall
 
         }
 
-        public String /*WallItem*/ GetWallItems(String uid) // of user by uid
+
+        public List<WallItem> GetWallItems(String uid)
         {
-            String filter = "&filter=owner";
-            String count = "&count=15";
-            String url = baseUrl + "wall.get?owner_id=" + uid + filter + count + vers;
-            String jsonAnswer = DoReqGet(url);
-            return DoReqGet(url);
+            return GetWallItems(uid, int.MaxValue);
+        }
+        
+        public  List<WallItem> GetWallItems(String uid, int count/*, int offset = 0*/) // of user by uid
+        {
+            //uid = GetUserInfo(uid).GetUid().ToString(); // получает id числовое, даже из домейна
+            if (count == int.MaxValue) // нужны все записи
+            {
+                
+            } // иначе вернуть нужное количество записей.
+            
+            int _count = 100;
+            int _offset = 0;
+            int cnt = 0;
+            String limitWallItemsInJson;
+            RootWallItems rootWall;
+            List<WallItem> wallItems = new List<WallItem>();
+            WallItem wItem = null;
+
+            
+
+            do
+            {
+                limitWallItemsInJson = GetLimitWallItemsInJson(uid, _count, _offset);
+                rootWall = JsonConvert.DeserializeObject<RootWallItems>(limitWallItemsInJson); // i-ая порция записей со стены пользователя
+                if (rootWall != null)
+                {
+                    cnt = (rootWall.response.count - _offset) / _count;
+
+                    foreach (var item in rootWall.response.items)
+                    {
+                        wItem = new WallItem();
+                        wItem.SetId(item.id);
+                        wItem.SetFromId(item.from_id);
+                        wItem.SetOwnerId(item.owner_id);
+                        wItem.SetDate(item.date);
+                        wItem.SetText(item.text);
+                        wItem.SetLikes(item.likes);
+                        wItem.SetReposts(item.reposts);
+                        wItem.SetComments(item.comments);
+
+                        wallItems.Add(wItem);
+                    }
+                    _offset += _count;
+                } // else стена закрыта - записей не получить. => выход из цикла.
+            } while (cnt > 0);
+
+
+            return wallItems;
 
         }
-    
+
+        private String GetLimitWallItemsInJson(String uid, int _count, int _offset)
+        {
+            String filter = "&filter=owner";
+            String count = "&count=" + _count.ToString();
+            String offset = "&offset=" + _offset.ToString();
+            String url = baseUrl + "wall.get?owner_id=" + uid + filter + count + offset + vers;
+            String jsonAnswer = DoReqGet(url);
+
+            return jsonAnswer;
+        }
+
+        public String GetNews(String uid) // возвращает для пользователя его новости - записи со стен друзей.
+        {
+            return null;
+        }
 
         public String DoReqGet(String url) // do GET
         {

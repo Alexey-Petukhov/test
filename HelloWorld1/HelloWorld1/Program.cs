@@ -49,9 +49,16 @@ namespace vkSmartWall
 
             String uid1 = "42560016";
             String uid2 = "71985644";
+            String uid3 = "53516640";
+            String uid4 = vkAPI.GetUserInfo("hovan").GetUid().ToString();
 
-            String str = vkAPI.GetWallItems("53516640");
-            RootWallItems rootWall = JsonConvert.DeserializeObject<RootWallItems>(str);
+
+            List<WallItem> wallItems = vkAPI.GetWallItems(uid2);
+
+            //for (int i = 0; i < rootWall.response.count/100; i++)
+            //{
+                
+            //}
             Group group = new Group(gId);
             //group.SetUsers(vkAPI.GetMembers(group.GetGroupId().ToString())); // gets group members with their friends
             
