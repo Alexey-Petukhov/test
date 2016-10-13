@@ -62,6 +62,7 @@ namespace vkSmartWall
                 user.SetFirstname(u.first_name);
                 user.SetLastname(u.last_name);
                 user.SetFriends(GetFriends(user.GetUid().ToString()));
+                //user.SetWall(GetWallItems(user.GetUid().ToString() ));
                 users.Add(user);
             }
 
@@ -116,32 +117,38 @@ namespace vkSmartWall
             return GetWallItems(uid, int.MaxValue);
         }
         
-        public  List<WallItem> GetWallItems(String uid, int count/*, int offset = 0*/) // of user by uid
+        public  List<WallItem> GetWallItems(String uid, int count) // of user by uid
         {
             //uid = GetUserInfo(uid).GetUid().ToString(); // получает id числовое, даже из домейна
-            if (count == int.MaxValue) // нужны все записи
-            {
-                
-            } // иначе вернуть нужное количество записей.
             
-            int _count = 100;
+            int _limit_count = 100;
             int _offset = 0;
             int cnt = 0;
             String limitWallItemsInJson;
             RootWallItems rootWall;
             List<WallItem> wallItems = new List<WallItem>();
             WallItem wItem = null;
-
+            
+            int needCnt = 0;
+            bool all = true; // все ли записи нужны?
+            if (count != int.MaxValue) // нужны не все записи
+            {
+                all = false;
+                needCnt = count;
+            } 
             
 
             do
             {
-                limitWallItemsInJson = GetLimitWallItemsInJson(uid, _count, _offset);
+                if (count < _limit_count) _limit_count = count;
+                limitWallItemsInJson = GetLimitWallItemsInJson(uid, _limit_count, _offset);
                 rootWall = JsonConvert.DeserializeObject<RootWallItems>(limitWallItemsInJson); // i-ая порция записей со стены пользователя
-                if (rootWall != null)
+                if (rootWall != null && rootWall.response != null)
                 {
-                    cnt = (rootWall.response.count - _offset) / _count;
+                    if (all) needCnt = rootWall.response.count;
+                    //else needCnt = count;
 
+                    cnt = (needCnt - _offset - 1) / _limit_count;
                     foreach (var item in rootWall.response.items)
                     {
                         wItem = new WallItem();
@@ -156,19 +163,19 @@ namespace vkSmartWall
 
                         wallItems.Add(wItem);
                     }
-                    _offset += _count;
+                    _offset += _limit_count;
+                    count = count - _limit_count;
                 } // else стена закрыта - записей не получить. => выход из цикла.
             } while (cnt > 0);
-
 
             return wallItems;
 
         }
 
-        private String GetLimitWallItemsInJson(String uid, int _count, int _offset)
+        private String GetLimitWallItemsInJson(String uid, int _limit_count, int _offset)
         {
             String filter = "&filter=owner";
-            String count = "&count=" + _count.ToString();
+            String count = "&count=" + _limit_count.ToString();
             String offset = "&offset=" + _offset.ToString();
             String url = baseUrl + "wall.get?owner_id=" + uid + filter + count + offset + vers;
             String jsonAnswer = DoReqGet(url);
@@ -176,11 +183,26 @@ namespace vkSmartWall
             return jsonAnswer;
         }
 
-        public String GetNews(String uid) // возвращает для пользователя его новости - записи со стен друзей.
+        public List<WallItem> GetNews(String uid) // возвращает для пользователя его новости - записи со стен друзей.
         {
-            return null;
+            List<User> friends = GetFriends(uid);
+            int cnt = 0;
+            foreach (var friend in friends)
+            {
+                friend.SetWall(GetWallItems(friend.GetUid().ToString(), 10));
+                cnt++;
+                Console.WriteLine(cnt);
+            } // у каждого друга пользователя появилась стена.
+
+            List<WallItem> news = new List<WallItem>();
+            foreach (var friend in friends)
+            {
+                news.AddRange(friend.GetWall());
+            }
+            return news;
         }
 
+       
         public String DoReqGet(String url) // do GET
         {
             WebRequest gReq = WebRequest.Create(url);

@@ -14,6 +14,7 @@ namespace vkSmartWall
         private String first_name = "";
         private String last_name = "";
         private List<User> friends = null;
+        private List<WallItem> wall = null; 
 
         public User(int uid)
         {
@@ -49,6 +50,16 @@ namespace vkSmartWall
         public void SetFriends(List<User> friends)
         {
             this.friends = friends;
+        }
+
+        public List<WallItem> GetWall()
+        {
+            return this.wall;
+        }
+
+        public void SetWall(List<WallItem> wall)
+        {
+            this.wall = wall;
         }
 
         public int GetUid()

@@ -50,15 +50,26 @@ namespace vkSmartWall
             String uid1 = "42560016";
             String uid2 = "71985644";
             String uid3 = "53516640";
-            String uid4 = vkAPI.GetUserInfo("hovan").GetUid().ToString();
+            String uid4 = vkAPI.GetUserInfo("mr.pavlichenkov").GetUid().ToString();
 
 
-            List<WallItem> wallItems = vkAPI.GetWallItems(uid2);
-
-            //for (int i = 0; i < rootWall.response.count/100; i++)
+            //List<WallItem> wallItems = vkAPI.GetWallItems(uid2);
+            //wallItems = vkAPI.GetWallItems(uid2, 46);
+            //wallItems = vkAPI.GetWallItems(uid2, 100);
+            //wallItems = vkAPI.GetWallItems(uid2, 101);
+            //wallItems = vkAPI.GetWallItems(uid2, 105);
+            //wallItems = vkAPI.GetWallItems(uid2, 120);
+            List<WallItem> userNews = vkAPI.GetNews(uid1);
+            userNews = userNews.OrderByDescending(o => o.GetLikes().count).ToList();
+            //userNews.Sort(delegate(WallItem x, WallItem y)
             //{
-                
-            //}
+            //    /*if (x.GetLikes() == null && y.GetLikes() == null) return 0;
+            //    else if (x.GetLikes() == null) return -1;
+            //    else if (y.GetLikes() == null) return 1;
+            //    else */ return x.GetLikes().CompareTo(y.GetLikes());
+            //});
+
+            
             Group group = new Group(gId);
             //group.SetUsers(vkAPI.GetMembers(group.GetGroupId().ToString())); // gets group members with their friends
             
