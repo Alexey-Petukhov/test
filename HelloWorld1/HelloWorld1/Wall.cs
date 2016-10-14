@@ -38,6 +38,19 @@ namespace vkSmartWall
         private Comments comments;
         private Likes likes;
         private Reposts reposts;
+        private List<CopyHistory> copy_history;
+        private List<Attachment2> attachments;
+        private int likesPriority;
+
+        public int GetLikesPriority()
+        {
+            return this.likesPriority;
+        }
+
+        public void SetLikesPriority(int likesProirity)
+        {
+            this.likesPriority = likesProirity;
+        }
 
         public WallItem()
         {
@@ -122,6 +135,26 @@ namespace vkSmartWall
         public void SetReposts(Reposts reposts)
         {
             this.reposts = reposts;
+        }
+        
+        public List<CopyHistory> GetCopyHistory()
+        {
+            return this.copy_history;
+        }
+
+        public void SetCopyHistory(List<CopyHistory> copy_history)
+        {
+            this.copy_history = copy_history;
+        }
+
+        public List<Attachment2> GetAttachment2()
+        {
+            return this.attachments;
+        }
+
+        public void SetAttachment2(List<Attachment2> attachments)
+        {
+            this.attachments = attachments;
         }
     }
 

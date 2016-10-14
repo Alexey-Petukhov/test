@@ -19,7 +19,7 @@ namespace vkSmartWall
         public VkAPI()
         {
             this.baseUrl = "https://api.vk.com/method/";
-            this.vers = "&v=5.57";
+            this.vers = "&v=5.58";
         }
 
         public List<User> GetMembers(String groupId) // of group by groupId or groupName
@@ -160,6 +160,8 @@ namespace vkSmartWall
                         wItem.SetLikes(item.likes);
                         wItem.SetReposts(item.reposts);
                         wItem.SetComments(item.comments);
+                        wItem.SetCopyHistory(item.copy_history);
+                        wItem.SetAttachment2(item.attachments);
 
                         wallItems.Add(wItem);
                     }
@@ -183,13 +185,24 @@ namespace vkSmartWall
             return jsonAnswer;
         }
 
-        public List<WallItem> GetNews(String uid) // возвращает для пользователя его новости - записи со стен друзей.
+        public List<WallItem> GetNews(/*String uid*/User user) // возвращает для пользователя его новости - записи со стен друзей.
         {
-            List<User> friends = GetFriends(uid);
+            //List<User> friends = GetFriends(uid);
+            List<User> friends = user.GetFriends();
             int cnt = 0;
             foreach (var friend in friends)
             {
-                friend.SetWall(GetWallItems(friend.GetUid().ToString(), 10));
+                // experemental smart sorting {
+                List<WallItem> tmp = GetWallItems(friend.GetUid().ToString(), 10);
+                tmp = tmp.OrderByDescending(o => o.GetLikes().count).ToList();
+                int lpCnt = 0;
+                foreach (var t in tmp)
+                {
+                    lpCnt++;
+                    t.SetLikesPriority(lpCnt);
+                }
+                // }
+                friend.SetWall(tmp);
                 cnt++;
                 Console.WriteLine(cnt);
             } // у каждого друга пользователя появилась стена.
