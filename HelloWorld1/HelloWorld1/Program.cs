@@ -26,8 +26,8 @@ namespace vkSmartWall
             //Console.WriteLine(vkAPI.GetMembers(gId));
             //File.WriteAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\members.txt", vkAPI.GetMembers(gId));
 
-           // Console.WriteLine(vkAPI.GetUserInfo(uid2));
-            //File.WriteAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\usr2.txt", vkAPI.GetUserInfo(uid2));
+           // Console.WriteLine(vkAPI.GetUserById(uid2));
+            //File.WriteAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\usr2.txt", vkAPI.GetUserById(uid2));
      
             Console.WriteLine("----------------------------------------------------------------");
 
@@ -37,7 +37,7 @@ namespace vkSmartWall
             ////for (int i = 0; i < memb.response.count; ++i)
             ////{
             ////    counter++;
-            ////    uBaseInfo = JsonConvert.DeserializeObject<RootUserBaseInfo>(vkAPI.GetUserInfo(memb.response.users[i].ToString()));  //
+            ////    uBaseInfo = JsonConvert.DeserializeObject<RootUserBaseInfo>(vkAPI.GetUserById(memb.response.users[i].ToString()));  //
             ////    //Console.WriteLine("(№ " + counter + ") id = " + memb.response.users[i] + " - " + uBaseInfo.response[0].first_name + " " + uBaseInfo.response[0].last_name);
 
 
@@ -50,7 +50,7 @@ namespace vkSmartWall
             String uid1 = "42560016";
             String uid2 = "71985644";
             String uid3 = "53516640";
-            String uid4 = vkAPI.GetUserInfo("mr.pavlichenkov").GetUid().ToString();
+            String uid4 = vkAPI.GetUserById("mr.pavlichenkov").GetUid().ToString();
 
 
             //List<WallItem> wallItems = vkAPI.GetWallItems(uid2, 10);
@@ -61,11 +61,72 @@ namespace vkSmartWall
             //wallItems = vkAPI.GetWallItems(uid2, 105);
             //wallItems = vkAPI.GetWallItems(uid2, 120);
 
-            User testUser = vkAPI.GetUserInfo(uid2);
+            User testUser = vkAPI.GetUserById(uid2);
             testUser.SetFriends(vkAPI.GetFriends(testUser.GetUid().ToString()));
 
             
-            List<WallItem> userNews = vkAPI.GetNews(testUser);
+            //List<WallItem> userNews = vkAPI.GetNews(testUser);
+            ////userNews = userNews.OrderByDescending(o => o.GetLikes().count).ToList();
+            //// сначала сортировка по приоритетам, затем по максимальному количеству лайков.
+            //userNews = userNews.OrderBy(o => o.GetLikesPriority()).ThenByDescending(o => o.GetLikes().count).ToList();
+
+            
+            //userNews.Sort(delegate(WallItem x, WallItem y)
+            //{
+            //    /*if (x.GetLikes() == null && y.GetLikes() == null) return 0;
+            //    else if (x.GetLikes() == null) return -1;
+            //    else if (y.GetLikes() == null) return 1;
+            //    else */ return x.GetLikes().CompareTo(y.GetLikes());
+            //});
+
+            
+            Group group = new Group(gId);
+            group.SetUsers(vkAPI.GetMembers(group.GetGroupId().ToString())); // gets group members with their friends
+            
+            //// запись в файл дерева -----------------------------------------------------------------------------
+            int uCounter = 0;
+            int fCounter = 0;
+            foreach (var memb in group.GetUsers())
+            {
+                uCounter++;
+                File.AppendAllText(@"..\..\members+friends.txt",
+                    "~(№ " + uCounter + ") id = " + memb.GetUid() +
+                    " - " + memb.GetFirstname() + " " + memb.GetLastname() +
+                    ". Friends count:" + memb.GetFriends().Count + "\r\n");
+                fCounter = 0;
+                foreach (var friend in memb.GetFriends())
+                {
+                    fCounter++;
+                    File.AppendAllText(@"..\..\members+friends.txt",
+                        "-----(№ " + fCounter + ") id = " + friend.GetUid() + " - " +
+                        friend.GetFirstname() + " " +
+                        friend.GetLastname() + "\r\n");
+                }
+            }
+            
+            ////------------------------------------------------------------------------------------------------------------
+
+            int cnt = 0;
+            foreach (var u in group.GetUsers())
+            {
+                cnt++;
+                Console.WriteLine("(№ " + cnt + ") id = " + u.GetUid() + " --- " + u.GetFirstname() + " " + u.GetLastname());
+            }
+            Console.WriteLine("Теперь введите id пользователя, чтобы получить список его друзей:");
+            String neededId = Console.ReadLine();
+            //User us = new User();
+            User usr = group.GetUsers().Find(x => x.GetUid() == int.Parse(neededId));//vkAPI.GetUserById(neededId);
+            /// !!! список друзей
+            
+            List<User> friends = usr.GetFriends();//vkAPI.GetFriends(neededId);
+            Console.WriteLine("Друзья пользователя " + usr.GetFirstname() + " " + usr.GetLastname() + "");
+            foreach (var friend in friends)
+            {
+                Console.WriteLine("---" + friend.GetFirstname() + " " + friend.GetLastname());
+            }
+            /// !!! - список новостей
+
+            List<WallItem> userNews = vkAPI.GetNews(usr);
             //userNews = userNews.OrderByDescending(o => o.GetLikes().count).ToList();
             // сначала сортировка по приоритетам, затем по максимальному количеству лайков.
             userNews = userNews.OrderBy(o => o.GetLikesPriority()).ThenByDescending(o => o.GetLikes().count).ToList();
@@ -80,13 +141,13 @@ namespace vkSmartWall
                 newsCnt++;
 
                 File.AppendAllText(@"..\..\newsForTestUser.txt", "№ " + newsCnt + " +-- newsText: " + newsItem.GetText() + "\r\n" +
-                    "     --- id владельца: " + newsItem.GetOwnerId()  + "\r\n" +
-                    "     --- date: " + new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(newsItem.GetDate()).ToString()  + "\r\n" +
-                    "     --- likes: " + newsItem.GetLikes().count  + "\r\n" +
+                    "     --- id владельца: " + newsItem.GetOwnerId() + "\r\n" +
+                    "     --- date: " + new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(newsItem.GetDate()).ToString() + "\r\n" +
+                    "     --- likes: " + newsItem.GetLikes().count + "\r\n" +
                     "     --- reposts: " + newsItem.GetReposts().count + "\r\n" +
-                    "     --- comments: " + newsItem.GetComments().count + "\r\n" 
+                    "     --- comments: " + newsItem.GetComments().count + "\r\n"
                     );
-                    
+
 
                 //Console.WriteLine("№ " + newsCnt + " +-- newsText: " + newsItem.GetText());
                 //Console.WriteLine("     --- id владельца: " + newsItem.GetOwnerId());
@@ -97,7 +158,7 @@ namespace vkSmartWall
                 if (newsItem.GetAttachment2() != null)
                 {
                     File.AppendAllText(@"..\..\newsForTestUser.txt", "     --- newsAttachments: " + "\r\n");
-                    
+
                     //Console.WriteLine("     --- newsAttachments: ");
                     atCnt = 0;
                     foreach (var attachment2 in newsItem.GetAttachment2())
@@ -120,7 +181,7 @@ namespace vkSmartWall
                             File.AppendAllText(@"..\..\newsForTestUser.txt", "     --- ~~~ аудио: " + attachment2.audio.url + "\r\n");
                             //Console.WriteLine("     --- ~~~ аудио: " + attachment2.audio.url);
                         }
-                           
+
                     }
                 }
 
@@ -141,66 +202,11 @@ namespace vkSmartWall
                         //Console.WriteLine("     --- ~~~ CHText: " + copyHistoryItem.text);
                         //Console.WriteLine("     --- ~~~ CHOwnerId: " + copyHistoryItem.owner_id);
                         //Console.WriteLine("     --- ~~~ CHDate: " + new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(copyHistoryItem.date).ToString());
-                        
+
                     }
-                    
+
                 }
             }
-            //userNews.Sort(delegate(WallItem x, WallItem y)
-            //{
-            //    /*if (x.GetLikes() == null && y.GetLikes() == null) return 0;
-            //    else if (x.GetLikes() == null) return -1;
-            //    else if (y.GetLikes() == null) return 1;
-            //    else */ return x.GetLikes().CompareTo(y.GetLikes());
-            //});
-
-            
-            Group group = new Group(gId);
-            group.SetUsers(vkAPI.GetMembers(group.GetGroupId().ToString())); // gets group members with their friends
-            
-            //// запись в файл дерева -----------------------------------------------------------------------------
-            //int uCounter = 0;
-            //int fCounter = 0;
-            //foreach (var memb in group.GetUsers())
-            //{
-            //    uCounter++;
-            //    File.AppendAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\HelloWorld1\members+friends.txt",
-            //        "(№ " + uCounter + ") id = " + memb.GetUid() + 
-            //        " - " + memb.GetFirstname() + " " + memb.GetLastname() + 
-            //        ". Friends count:" + memb.GetFriends().Count +"\r\n");
-            //    fCounter = 0;
-            //    foreach (var friend in memb.GetFriends())
-            //    {
-            //        fCounter++;
-            //        File.AppendAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\HelloWorld1\members+friends.txt",
-            //            "-----(№ " + fCounter + ") id = " + friend.GetUid() + " - " + 
-            //            friend.GetFirstname() + " " + 
-            //            friend.GetLastname() + "\r\n");
-            //    }
-            //}
-            
-            ////------------------------------------------------------------------------------------------------------------
-
-            int cnt = 0;
-            foreach (var u in group.GetUsers())
-            {
-                cnt++;
-                Console.WriteLine("(№ " + cnt + ") id = " + u.GetUid() + " --- " + u.GetFirstname() + " " + u.GetLastname());
-            }
-            Console.WriteLine("Теперь введите id пользователя, чтобы получить список его друзей:");
-            String neededId = Console.ReadLine();
-            //User us = new User();
-            User usr = group.GetUsers().Find(x => x.GetUid() == int.Parse(neededId));//vkAPI.GetUserInfo(neededId);
-            /// !!! список друзей
-            
-            List<User> friends = usr.GetFriends();//vkAPI.GetFriends(neededId);
-            Console.WriteLine("Друзья пользователя " + usr.GetFirstname() + " " + usr.GetLastname() + "");
-            foreach (var friend in friends)
-            {
-                Console.WriteLine("---" + friend.GetFirstname() + " " + friend.GetLastname());
-            }
-            /// !!! - список новостей
-            
             //List<WallItem> userNews = vkAPI.
 
                 //File.WriteAllText(@"D:\Documents\Visual Studio 2013\Projects\HelloWorld1\usr1Friends.txt", vkAPI.GetFriends(uid1));
@@ -209,9 +215,9 @@ namespace vkSmartWall
             //foreach (var u in friendIds.response)
             //{
                 
-            //    friends.Add(vkAPI.GetUserInfo(u.ToString()));
+            //    friends.Add(vkAPI.GetUserById(u.ToString()));
             //}
-            //User usr = vkAPI.GetUserInfo(uid1);
+            //User usr = vkAPI.GetUserById(uid1);
             //Console.WriteLine("Друзья пользователя " + usr.GetFirstname() + " " + usr.GetLastname() + "");
             //foreach (var friend in friends)
             //{

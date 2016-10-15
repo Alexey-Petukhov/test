@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace vkSmartWall
 {
-    class User
+    public class User
     {
         private int uid = 0;
         private String first_name = "";

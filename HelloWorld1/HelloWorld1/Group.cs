@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace vkSmartWall
 {
-    class Group
+    public class Group
     {
         //private String groupNmae = "csu_iit";
         //private int groupId;

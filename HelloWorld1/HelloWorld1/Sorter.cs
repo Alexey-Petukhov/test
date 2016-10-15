@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace vkSmartWall
 {
-    class Sorter
+    public class Sorter
     {
     }
 }

@@ -26,7 +26,7 @@ namespace vkSmartWall
         }
     }
 
-    class WallItem
+    public class WallItem
     {
 
         private int id;

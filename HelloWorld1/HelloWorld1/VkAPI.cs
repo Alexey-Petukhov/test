@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace vkSmartWall
 {
-    class VkAPI
+    public class VkAPI
     {
         private String baseUrl = "";
         private String vers = "";
@@ -70,7 +70,7 @@ namespace vkSmartWall
 
         }
 
-        public User GetUserInfo(String uid) // of user by uid
+        public User GetUserById(String uid) // of user by uid
         {
             String url = baseUrl + "users.get?user_ids=" + uid + vers;
             String jsonAnswer = DoReqGet(url);
@@ -119,7 +119,7 @@ namespace vkSmartWall
         
         public  List<WallItem> GetWallItems(String uid, int count) // of user by uid
         {
-            //uid = GetUserInfo(uid).GetUid().ToString(); // получает id числовое, даже из домейна
+            //uid = GetUserById(uid).GetUid().ToString(); // получает id числовое, даже из домейна
             
             int _limit_count = 100;
             int _offset = 0;
