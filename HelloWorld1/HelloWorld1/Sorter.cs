@@ -8,5 +8,14 @@ namespace vkSmartWall
 {
     public class Sorter
     {
+        public Sorter()
+        {
+            
+        }
+
+        public void SortBy()
+        {
+            
+        }
     }
 }

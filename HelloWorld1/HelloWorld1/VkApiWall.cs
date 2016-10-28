@@ -6,177 +6,9 @@ using System.Threading.Tasks;
 
 namespace vkSmartWall
 {
-    class Wall
-    {
-        private List<WallItem> wallItems = null;
-         
-        public Wall(String ownerId)
-        {
-            wallItems = new List<WallItem>();
-        }
-
-        public List<WallItem> GetWallItems()
-        {
-            return this.wallItems;
-        }
-
-        public void SetWallItems(List<WallItem> wallItems)
-        {
-            this.wallItems = wallItems;
-        }
-    }
-
-    public class WallItem
-    {
-
-        private int id;
-        private int from_id;
-        private int owner_id;
-        private int date;
-        //private string post_type;
-        private string text;
-        private Comments comments;
-        private Likes likes;
-        private Reposts reposts;
-        private List<CopyHistory> copy_history;
-        private List<Attachment2> attachments;
-        private int likesPriority;
-
-        public int GetLikesPriority()
-        {
-            return this.likesPriority;
-        }
-
-        public void SetLikesPriority(int likesProirity)
-        {
-            this.likesPriority = likesProirity;
-        }
-
-        public WallItem()
-        {
-
-        }
-
-        public int GetId()
-        {
-            return this.id;
-        }
-
-        public void SetId(int id)
-        {
-            this.id = id;
-        }
-
-        public int GetFromId()
-        {
-            return this.from_id;
-        }
-
-        public void SetFromId(int from_id)
-        {
-            this.from_id = from_id;
-        }
-
-        public int GetOwnerId()
-        {
-            return this.owner_id;
-        }
-
-        public void SetOwnerId(int owner_id)
-        {
-            this.owner_id = owner_id;
-        }
-
-        public int GetDate()
-        {
-            return this.date;
-        }
-
-        public void SetDate(int date)
-        {
-            this.date = date;
-        }
-
-        public string GetText()
-        {
-            return this.text;
-        }
-
-        public void SetText(string text)
-        {
-            this.text = text;
-        }
-
-        public Comments GetComments()
-        {
-            return this.comments;
-        }
-
-        public void SetComments(Comments comments)
-        {
-            this.comments = comments;
-        }
-
-        public Likes GetLikes()
-        {
-            return this.likes;
-        }
-
-        public void SetLikes(Likes likes)
-        {
-            this.likes = likes;
-        }
-
-        public Reposts GetReposts()
-        {
-            return this.reposts;
-        }
-
-        public void SetReposts(Reposts reposts)
-        {
-            this.reposts = reposts;
-        }
-        
-        public List<CopyHistory> GetCopyHistory()
-        {
-            return this.copy_history;
-        }
-
-        public void SetCopyHistory(List<CopyHistory> copy_history)
-        {
-            this.copy_history = copy_history;
-        }
-
-        public List<Attachment2> GetAttachment2()
-        {
-            return this.attachments;
-        }
-
-        public void SetAttachment2(List<Attachment2> attachments)
-        {
-            this.attachments = attachments;
-        }
-    }
-
-    //class WallItem
+    //class VkApiWall
     //{
-    //    public int Id { get; private set; }
-    //    public int FromId { get; private set; }
-    //    public int OwnerId { get; private set; }
-    //    public int Date { get; private set; }
-    //    //private string post_type;
-    //    public string Text { get; private set; }
-    //    public Comments Comments1 { get; private set; }
-    //    public Likes Likes1 { get; private set; }
-    //    public Reposts Reposts1 { get; private set; }
-
-    //    public WallItem()
-    //    {
-
-    //    }
     //}
-
-
     public class Photo
     {
         public int id { get; set; }
@@ -328,9 +160,8 @@ namespace vkSmartWall
         public List<Item> items { get; set; }
     }
 
-    public class RootWallItems
+    public class VkApiWall
     {
         public WallItems response { get; set; }
     }
-
 }
