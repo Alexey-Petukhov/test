@@ -65,6 +65,7 @@
     <Compile Include="VkApiWall.cs" />
     <Compile Include="VkClient.cs" />
     <Compile Include="AppWall.cs" />
+    <Compile Include="VkClientConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
