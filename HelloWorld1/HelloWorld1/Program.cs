@@ -22,7 +22,12 @@ namespace vkSmartWall
             Console.WriteLine("----------------------------------------------------------------");
 
             //String uid1 = "42560016"; String uid2 = "71985644"; String uid3 = "53516640"; String uid4 = vkClient.GetUserById("mr.pavlichenkov").Uid.ToString();
-           
+
+
+            AppWall aw = new AppWall();
+            aw = vkClient.GetWall("71985644");
+
+
             var appGroup = new AppGroup(gId);
             appGroup.Users = vkClient.GetMembers(appGroup.GroupName); // gets AppGroup members with their friends
             
@@ -35,15 +40,15 @@ namespace vkSmartWall
             {
                 userCounter++;
                 File.AppendAllText(@"..\..\members+friends.txt",
-                    "~(№ " + userCounter + ") id = " + memb.Uid +
+                    "~(№ " + userCounter + ") Id = " + memb.Uid +
                     " - " + memb.FirstName + " " + memb.LastName +
-                    ". Friends count:" + memb.Friends.Count + "\r\n");
+                    ". Friends Count:" + memb.Friends.Count + "\r\n");
                 friendsCounter = 0;
                 foreach (var friend in memb.Friends)
                 {
                     friendsCounter++;
                     File.AppendAllText(@"..\..\members+friends.txt",
-                        "-----(№ " + friendsCounter + ") id = " + friend.Uid + " - " +
+                        "-----(№ " + friendsCounter + ") Id = " + friend.Uid + " - " +
                         friend.FirstName + " " +
                         friend.LastName + "\r\n");
                 }
@@ -55,10 +60,10 @@ namespace vkSmartWall
             foreach (var u in appGroup.Users)
             {
                 cnt++;
-                Console.WriteLine("(№ " + cnt + ") id = " + u.Uid + " --- " + u.FirstName + " " + u.LastName);
+                Console.WriteLine("(№ " + cnt + ") Id = " + u.Uid + " --- " + u.FirstName + " " + u.LastName);
             }
             // конец вывода списка пользователей группы
-            Console.WriteLine("Теперь введите id пользователя, чтобы получить список его друзей:");
+            Console.WriteLine("Теперь введите Id пользователя, чтобы получить список его друзей:");
             String neededId = Console.ReadLine();
             AppUser appUser = appGroup.Users.Find(x => x.Uid == int.Parse(neededId));
             /// !!! список друзей
@@ -73,7 +78,7 @@ namespace vkSmartWall
 
             AppWall userNews = vkClient.GetNews(appUser);
             // сначала сортировка по приоритетам, затем по максимальному количеству лайков.
-            userNews.Items = userNews.Items.OrderBy(o => o.LikesPriority).ThenByDescending(o => o.GetLikes().count).ToList();
+            userNews.Items = userNews.Items.OrderBy(o => o.LikesPriority).ThenByDescending(o => o.AppLikes.Count).ToList();
 
             Console.WriteLine("Новости пользователя " + appUser.FirstName + " " + appUser.LastName);
             int newsCount = 0;
@@ -85,48 +90,48 @@ namespace vkSmartWall
                 newsCount++;
 
                 File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "№ " + newsCount + " +-- newsText: " + newsItem.Text + "\r\n" +
-                    "     --- id владельца: " + newsItem.OwnerId + "\r\n" +
-                    "     --- date: " + new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(newsItem.Date).ToString() + "\r\n" +
-                    "     --- likes: " + newsItem.GetLikes().count + "\r\n" +
-                    "     --- reposts: " + newsItem.GetReposts().count + "\r\n" +
-                    "     --- comments: " + newsItem.GetComments().count + "\r\n"
+                    "     --- Id владельца: " + newsItem.OwnerId + "\r\n" +
+                    "     --- Date: " + new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(newsItem.Date).ToString() + "\r\n" +
+                    "     --- likes: " + newsItem.AppLikes.Count + "\r\n" +
+                    "     --- reposts: " + newsItem.AppReposts.Count + "\r\n" +
+                    "     --- comments: " + newsItem.AppComments.Count + "\r\n"
                     );
 
-                if (newsItem.GetAttachment2() != null)
+                if (newsItem.AppAttachments != null)
                 {
                     File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- newsAttachments: " + "\r\n");
 
                     attachmentsCount = 0;
-                    foreach (var attachment2 in newsItem.GetAttachment2())
+                    foreach (var appAttachment in newsItem.AppAttachments)
                     {
                         attachmentsCount++;
                         File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- --- Вложение № " + attachmentsCount + "\r\n" +
-                            "     --- ~~~ тип вложения " + attachment2.type + "\r\n"
+                            "     --- ~~~ тип вложения " + appAttachment.Type + "\r\n"
                             );
 
-                        if (attachment2.type.Equals("photo"))
+                        if (appAttachment.Type.Equals("Photo"))
                         {
-                            File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- ~~~ фото: " + attachment2.photo.photo_130 + "\r\n");
+                            File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- ~~~ фото: " + appAttachment.Photo.Photo130 + "\r\n");
                         }
-                        else if (attachment2.type.Equals("audio"))
+                        else if (appAttachment.Type.Equals("Audio"))
                         {
-                            File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- ~~~ аудио: " + attachment2.audio.url + "\r\n");
+                            File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- ~~~ аудио: " + appAttachment.Audio.Url + "\r\n");
                         }
 
                     }
                 }
 
-                if (newsItem.GetCopyHistory() != null)
+                if (newsItem.AppCopyHistory != null)
                 {
                     File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- newsCopyHistory: " + "\r\n");
                     copyHistoryCount = 0;
-                    foreach (var copyHistoryItem in newsItem.GetCopyHistory())
+                    foreach (var copyHistoryItem in newsItem.AppCopyHistory)
                     {
                         copyHistoryCount++;
                         File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- --- Вложение № " + copyHistoryCount + "\r\n" +
-                            "     --- ~~~ CHText: " + copyHistoryItem.text + "\r\n" +
-                            "     --- ~~~ CHOwnerId: " + copyHistoryItem.owner_id + "\r\n" +
-                            "     --- ~~~ CHDate: " + new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(copyHistoryItem.date).ToString() + "\r\n"
+                            "     --- ~~~ CHText: " + copyHistoryItem.Text + "\r\n" +
+                            "     --- ~~~ CHOwnerId: " + copyHistoryItem.OwnerId + "\r\n" +
+                            "     --- ~~~ CHDate: " + new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(copyHistoryItem.Date).ToString() + "\r\n"
                             );
                     }
 

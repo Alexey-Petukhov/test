@@ -44,16 +44,19 @@ namespace vkSmartWall
         public AppWallItem Convert(Item wallItem)
         {
             var appWallItem = new AppWallItem();
-            appWallItem.Id = wallItem.id;
+            appWallItem.Id = wallItem.owner_id + "_" + wallItem.id;
             appWallItem.FromId = wallItem.from_id;
             appWallItem.OwnerId = wallItem.owner_id;
             appWallItem.Date = wallItem.date;
             appWallItem.Text = wallItem.text;
-            appWallItem.SetLikes(wallItem.likes);
-            appWallItem.SetReposts(wallItem.reposts);
-            appWallItem.SetComments(wallItem.comments);
-            appWallItem.SetCopyHistory(wallItem.copy_history);
-            appWallItem.SetAttachment2(wallItem.attachments);
+            appWallItem.AppLikes = new AppLikes();
+                appWallItem.AppLikes.Count = wallItem.likes.count;
+            appWallItem.AppReposts = new AppReposts();
+                appWallItem.AppReposts.Count = wallItem.reposts.count;
+            appWallItem.AppComments = new AppComments();
+                appWallItem.AppComments.Count = wallItem.comments.count;
+            //appWallItem.AppCopyHistory = wallItem.copy_history;
+            //appWallItem.AppAttachments = wallItem.attachments;
 
             return appWallItem;
         }
@@ -77,6 +80,11 @@ namespace vkSmartWall
                 appWall.Items.Add(Convert(item));
             }
             return appWall;
+        }
+
+        public void ConvertTo(VkApiWall vkApiWall)
+        {
+            
         }
     }
 
