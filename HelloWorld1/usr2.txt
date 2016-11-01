@@ -1,1 +1,0 @@
-{"response":[{"uid":71985644,"first_name":"Алексей","last_name":"Петухов"}]}
