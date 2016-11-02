@@ -24,8 +24,8 @@ namespace vkSmartWall
             //String uid1 = "42560016"; String uid2 = "71985644"; String uid3 = "53516640"; String uid4 = vkClient.GetUserById("mr.pavlichenkov").Uid.ToString();
 
 
-            AppWall aw = new AppWall();
-            aw = vkClient.GetWall("71985644");
+            //AppWall aw = new AppWall();
+            //aw = vkClient.GetWall("71985644");
 
 
             var appGroup = new AppGroup(gId);
@@ -109,11 +109,11 @@ namespace vkSmartWall
                             "     --- ~~~ тип вложения " + appAttachment.Type + "\r\n"
                             );
 
-                        if (appAttachment.Type.Equals("Photo"))
+                        if (appAttachment.Type.Equals("photo"))
                         {
                             File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- ~~~ фото: " + appAttachment.Photo.Photo130 + "\r\n");
                         }
-                        else if (appAttachment.Type.Equals("Audio"))
+                        else if (appAttachment.Type.Equals("audio"))
                         {
                             File.AppendAllText(@"..\..\newsFor-" + appUser.Uid + "-User.txt", "     --- ~~~ аудио: " + appAttachment.Audio.Url + "\r\n");
                         }

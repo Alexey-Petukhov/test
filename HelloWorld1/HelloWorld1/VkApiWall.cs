@@ -45,7 +45,15 @@ namespace vkSmartWall
     {
         public string type { get; set; }
         public Photo photo { get; set; }
+        public Link link { get; set; }
         public Audio audio { get; set; }
+    }
+    public class Link
+    {
+        public string url { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public Photo photo { get; set; }
     }
 
     public class PostSource
@@ -116,6 +124,7 @@ namespace vkSmartWall
     {
         public string type { get; set; }
         public Photo2 photo { get; set; }
+        public Link link { get; set; }
         public Audio2 audio { get; set; }
     }
 

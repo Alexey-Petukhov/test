@@ -29,7 +29,7 @@ namespace vkSmartWall
         public AppLikes AppLikes { get; set; }
         public AppReposts AppReposts { get; set; }
         public List<AppCopyHistory> AppCopyHistory { get; set; }
-        public List<AppAttachment2> AppAttachments { get; set; }
+        public List<AppAttachment> AppAttachments { get; set; }
         //public Comments comments;
         //public Likes likes;
         //public Reposts reposts;
@@ -96,7 +96,7 @@ namespace vkSmartWall
     }
     public class AppPhoto
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         //public int AlbumId { get; set; }
         //public int OwnerId { get; set; }
         //public int user_id { get; set; }
@@ -125,12 +125,21 @@ namespace vkSmartWall
         //public int lyrics_id { get; set; }
         //public int genre_id { get; set; }
     }
+    public class AppLink
+    {
+        public string Url { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public AppPhoto Photo { get; set; }
+    }
 
     public class AppAttachment
     {
         public string Type { get; set; }
         public AppPhoto Photo { get; set; }
         public AppAudio Audio { get; set; }
+
+        public AppLink Link { get; set; }
     }
 
     //public class AppPostSource
@@ -168,41 +177,29 @@ namespace vkSmartWall
 
     public class AppPhoto2
     {
-        //public int Id { get; set; }
-        //public int album_id { get; set; }
-        //public int OwnerId { get; set; }
-        //public string photo_75 { get; set; }
+        
         public string Photo130 { get; set; }
-        //public string photo_604 { get; set; }
-        //public string photo_807 { get; set; }
-        //public string photo_1280 { get; set; }
-        //public int width { get; set; }
-        //public int height { get; set; }
-        //public string Text { get; set; }
-        //public int Date { get; set; }
-        //public string access_key { get; set; }
-        //public string photo_2560 { get; set; }
-        //public int? post_id { get; set; }
+
     }
 
-    public class AppAudio2
-    {
-        //public int Id { get; set; }
-        //public int OwnerId { get; set; }
-        public string Artist { get; set; }
-        public string Title { get; set; }
-        public string Url { get; set; }
-        //public int duration { get; set; }
-        //public int Date { get; set; }
-        //public int genre_id { get; set; }
-    }
+    //public class AppAudio2
+    //{
+    //    //public int Id { get; set; }
+    //    //public int OwnerId { get; set; }
+    //    public string Artist { get; set; }
+    //    public string Title { get; set; }
+    //    public string Url { get; set; }
+    //    //public int duration { get; set; }
+    //    //public int Date { get; set; }
+    //    //public int genre_id { get; set; }
+    //}
 
-    public class AppAttachment2
-    {
-        public string Type { get; set; }
-        public AppPhoto2 Photo { get; set; }
-        public AppAudio2 Audio { get; set; }
-    }
+    //public class AppAttachment2
+    //{
+    //    public string Type { get; set; }
+    //    public AppPhoto2 Photo { get; set; }
+    //    public AppAudio2 Audio { get; set; }
+    //}
 
     //public class AppPlace
     //{
