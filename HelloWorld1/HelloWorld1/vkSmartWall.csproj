@@ -53,19 +53,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppGroup.cs" />
+    <Compile Include="VkClientLayer\AppGroup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sorter.cs" />
-    <Compile Include="AppUser.cs" />
-    <Compile Include="VkAPI.cs" />
-    <Compile Include="VkApiFriends.cs" />
-    <Compile Include="VkApiGroup.cs" />
-    <Compile Include="VkApiUser.cs" />
-    <Compile Include="VkApiWall.cs" />
-    <Compile Include="VkClient.cs" />
-    <Compile Include="AppWall.cs" />
-    <Compile Include="VkClientConverter.cs" />
+    <Compile Include="VkClientLayer\AppSorter.cs" />
+    <Compile Include="VkClientLayer\AppUser.cs" />
+    <Compile Include="VkApiLayer\VkAPI.cs" />
+    <Compile Include="VkApiLayer\VkApiFriends.cs" />
+    <Compile Include="VkApiLayer\VkApiGroup.cs" />
+    <Compile Include="VkApiLayer\VkApiUser.cs" />
+    <Compile Include="VkApiLayer\VkApiWall.cs" />
+    <Compile Include="VkClientLayer\VkClient.cs" />
+    <Compile Include="VkClientLayer\AppWall.cs" />
+    <Compile Include="VkClientLayer\VkClientConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

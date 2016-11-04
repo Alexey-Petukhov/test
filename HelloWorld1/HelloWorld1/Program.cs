@@ -18,15 +18,11 @@ namespace vkSmartWall
     
             VkAPI vkAPI = new VkAPI();
             var vkClient = new VkClient(vkAPI);
+            var appSorter = new AppSorter();
             
             Console.WriteLine("----------------------------------------------------------------");
 
             //String uid1 = "42560016"; String uid2 = "71985644"; String uid3 = "53516640"; String uid4 = vkClient.GetUserById("mr.pavlichenkov").Uid.ToString();
-
-
-            //AppWall aw = new AppWall();
-            //aw = vkClient.GetWall("71985644");
-
 
             var appGroup = new AppGroup(gId);
             appGroup.Users = vkClient.GetMembers(appGroup.GroupName); // gets AppGroup members with their friends
@@ -77,8 +73,8 @@ namespace vkSmartWall
             /// !!! - список новостей
 
             AppWall userNews = vkClient.GetNews(appUser);
-            // сначала сортировка по приоритетам, затем по максимальному количеству лайков.
-            userNews.Items = userNews.Items.OrderBy(o => o.LikesPriority).ThenByDescending(o => o.AppLikes.Count).ToList();
+
+            userNews = appSorter.SortByLikesDesc(userNews);
 
             Console.WriteLine("Новости пользователя " + appUser.FirstName + " " + appUser.LastName);
             int newsCount = 0;
