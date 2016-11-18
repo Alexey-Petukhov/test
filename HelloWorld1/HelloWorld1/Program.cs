@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 using Newtonsoft.Json;
+using vkSmartWall.FacebookApiLayer;
+using vkSmartWall.FbClientLayer;
 
 namespace vkSmartWall
 {
@@ -14,11 +16,16 @@ namespace vkSmartWall
     {
         static void Main()
         {
-            String gId = "csu_iit";
-    
-            VkAPI vkAPI = new VkAPI();
+            String gId = "csu_iit"; 
+            //String gId = "38725714";
+
+            var vkAPI = new VkAPI();
             var vkClient = new VkClient(vkAPI);
             var appSorter = new AppSorter();
+
+            var fbApi = new FbAPI();
+            var fbClient = new FbClient(fbApi);
+
             
             Console.WriteLine("----------------------------------------------------------------");
 
@@ -74,6 +81,40 @@ namespace vkSmartWall
 
             AppWall userNews = vkClient.GetNews(appUser);
 
+            //-------------------------- Выставление ко всем ссылкам количество facebook шеров 
+            foreach (var userNewsItem in userNews.Items)
+            {
+                if (userNewsItem.AppAttachments != null)
+                {
+                    foreach (var appAttachment in userNewsItem.AppAttachments)
+                    {
+                        if (appAttachment.Type.Equals("link"))
+                        {
+                            appAttachment.Link.FbShareCount =
+                                fbClient.GetFbSharesFromLink(appAttachment.Link.Url).ShareCount;
+                        }
+                    }
+                }
+                if (userNewsItem.AppCopyHistory != null)
+                {
+                    foreach (var appCopyHistory in userNewsItem.AppCopyHistory)
+                    {
+                        if (appCopyHistory.Attachments != null)
+                        {
+                            foreach (var appAttachment in appCopyHistory.Attachments)
+                            {
+                                if (appAttachment.Type.Equals("link"))
+                                {
+                                    appAttachment.Link.FbShareCount =
+                                        fbClient.GetFbSharesFromLink(appAttachment.Link.Url).ShareCount;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //---------------------------------------------------------------------------------------------
+            
             userNews = appSorter.SortByLikesDesc(userNews);
 
             Console.WriteLine("Новости пользователя " + appUser.FirstName + " " + appUser.LastName);
